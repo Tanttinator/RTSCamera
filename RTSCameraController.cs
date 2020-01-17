@@ -49,6 +49,11 @@ namespace RTSCamera
             transform.RotateAround(transform.position, transform.right, angle);
         }
 
+        public void Zoom(float amount)
+        {
+            camera.transform.Translate(new Vector3(0f, 0f, amount));
+        }
+
         /// <summary>
         /// Calculates the point where a ray from the cursor intersects with pivot.y.
         /// </summary>

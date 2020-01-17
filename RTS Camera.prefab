@@ -60,7 +60,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wasd: 1
   dragging: 1
-  speed: 5
+  panPivot: 1
+  tiltPivot: 1
+  zooming: 1
+  moveSpeed: 5
+  pivotSpeed: 5
+  zoomSpeed: 1000
 --- !u!1 &4180639625782046255
 GameObject:
   m_ObjectHideFlags: 0

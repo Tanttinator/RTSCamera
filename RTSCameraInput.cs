@@ -21,11 +21,18 @@ namespace RTSCamera
         public bool panPivot = true;
         public bool tiltPivot = true;
 
+        //Zooming
+        public bool zooming = true;
+
+        [Header("Movement speeds")]
         //Speed of camera movement
         public float moveSpeed = 5f;
 
         //Speed of pivot rotation
         public float pivotSpeed = 5f;
+
+        //Speed of zooming
+        public float zoomSpeed = 1000f;
 
         new RTSCameraController camera;
 
@@ -75,6 +82,12 @@ namespace RTSCamera
                         camera.TiltPivot((pivotPos - newPos).y * Time.deltaTime * pivotSpeed);
                     pivotPos = newPos;
                 }
+            }
+
+            if(zooming)
+            {
+                if (Mathf.Abs(Input.GetAxis("Mouse ScrollWheel")) > 0.001f)
+                    camera.Zoom(Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * zoomSpeed);
             }
         }
     }
