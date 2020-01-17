@@ -11,6 +11,17 @@ namespace RTSCamera
     {
         new public Camera camera;
 
+        [Header("Movement speeds")]
+        public float moveSpeed = 5f;
+
+        public float pivotSpeed = 5f;
+
+        public float zoomSpeed = 5f;
+
+        Vector2 dragPos;
+
+        #region Low Level
+
         /// <summary>
         /// Move the camera instantly.
         /// </summary>
@@ -32,24 +43,28 @@ namespace RTSCamera
         }
 
         /// <summary>
-        /// Pan the camera around the pivot
+        /// Pan the camera around the pivot by an angle.
         /// </summary>
         /// <param name="angle"></param>
-        public void PanPivot(float angle)
+        public void PanPivotAngle(float angle)
         {
             transform.Rotate(0f, angle, 0f, Space.World);
         }
 
         /// <summary>
-        /// Tilt the camera around the pivot
+        /// Tilt the camera around the pivot by an angle.
         /// </summary>
         /// <param name="angle"></param>
-        public void TiltPivot(float angle)
+        public void TiltPivotAngle(float angle)
         {
             transform.RotateAround(transform.position, transform.right, angle);
         }
 
-        public void Zoom(float amount)
+        /// <summary>
+        /// Zoom the camera by moving it farther / closer to the pivot.
+        /// </summary>
+        /// <param name="amount"></param>
+        public void ZoomDistance(float amount)
         {
             camera.transform.Translate(new Vector3(0f, 0f, amount));
         }
@@ -66,5 +81,68 @@ namespace RTSCamera
             Vector3 intersection = camera.transform.position + vectorToGround;
             return new Vector2(intersection.x, intersection.z);
         }
+
+        #endregion
+
+        #region High Level
+
+        /// <summary>
+        /// Move the camera along the Z axis.
+        /// </summary>
+        /// <param name="dir">Positive to move forwards, negative to move backwards.</param>
+        public void Dolly(float dir)
+        {
+            MoveLocal(Vector2.up * dir * Time.deltaTime * moveSpeed);
+        }
+
+        /// <summary>
+        /// Move the camera along the X axis.
+        /// </summary>
+        /// <param name="dir">Positive to move right, negative to move left.</param>
+        public void Trucking(float dir)
+        {
+            MoveLocal(Vector2.right * dir * Time.deltaTime * moveSpeed);
+        }
+
+        /// <summary>
+        /// Move the camera by dragging.
+        /// </summary>
+        /// <param name="start">Did the drag start this frame?</param>
+        public void DragMove(bool start = false)
+        {
+            Vector2 newPos = GetMouseIntersection();
+            if(!start)
+                Move(dragPos - newPos);
+            dragPos = GetMouseIntersection();
+        }
+
+        /// <summary>
+        /// Pan around the pivot.
+        /// </summary>
+        /// <param name="dir">Positive to turn clockwise, negative to turn anti-clockwise.</param>
+        public void PanPivot(float dir)
+        {
+            PanPivotAngle(dir * Time.deltaTime * pivotSpeed);
+        }
+
+        /// <summary>
+        /// Tilt around the pivot.
+        /// </summary>
+        /// <param name="dir">Positive to turn down, negative to turn up.</param>
+        public void TiltPivot(float dir)
+        {
+            TiltPivotAngle(-dir * Time.deltaTime * pivotSpeed);
+        }
+
+        /// <summary>
+        /// Zoom the camera by moving it farther / closer to the pivot
+        /// </summary>
+        /// <param name="dir">Positive to zoom in, negative to zoom out</param>
+        public void Zoom(float dir)
+        {
+            ZoomDistance(dir * Time.deltaTime * zoomSpeed);
+        }
+
+        #endregion
     }
 }

@@ -46,6 +46,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camera: {fileID: 4180639625782046253}
+  moveSpeed: 5
+  pivotSpeed: 100
+  zoomSpeed: 1000
 --- !u!114 &4180639624756299614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63,9 +66,6 @@ MonoBehaviour:
   panPivot: 1
   tiltPivot: 1
   zooming: 1
-  moveSpeed: 5
-  pivotSpeed: 5
-  zoomSpeed: 1000
 --- !u!1 &4180639625782046255
 GameObject:
   m_ObjectHideFlags: 0

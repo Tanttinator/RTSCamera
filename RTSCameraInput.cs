@@ -24,21 +24,7 @@ namespace RTSCamera
         //Zooming
         public bool zooming = true;
 
-        [Header("Movement speeds")]
-        //Speed of camera movement
-        public float moveSpeed = 5f;
-
-        //Speed of pivot rotation
-        public float pivotSpeed = 5f;
-
-        //Speed of zooming
-        public float zoomSpeed = 1000f;
-
         new RTSCameraController camera;
-
-        Vector2 dragPos;
-
-        Vector2 pivotPos;
 
         private void Awake()
         {
@@ -50,8 +36,8 @@ namespace RTSCamera
             //Keyboard movement
             if(wasd)
             {
-                Vector2 dir = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * moveSpeed * Time.deltaTime;
-                camera.MoveLocal(dir);
+                camera.Dolly(Input.GetAxis("Vertical"));
+                camera.Trucking(Input.GetAxis("Horizontal"));
             }
 
             //Drag movement
@@ -59,36 +45,27 @@ namespace RTSCamera
             {
                 if(Input.GetMouseButtonDown(0))
                 {
-                    dragPos = camera.GetMouseIntersection();
+                    camera.DragMove(true);
                 }
                 if(Input.GetMouseButton(0))
                 {
-                    Vector2 newPos = camera.GetMouseIntersection();
-                    camera.Move(dragPos - newPos);
-                    dragPos = camera.GetMouseIntersection();
+                    camera.DragMove();
                 }
             }
 
-            if(panPivot || tiltPivot)
+            //Drag turning
+            if (Input.GetMouseButton(1))
             {
-                if (Input.GetMouseButtonDown(1))
-                    pivotPos = Input.mousePosition;
-                if(Input.GetMouseButton(1))
-                {
-                    Vector2 newPos = Input.mousePosition;
-                    if(panPivot)
-                        camera.PanPivot(-(pivotPos - newPos).x * Time.deltaTime * pivotSpeed);
-                    if (tiltPivot)
-                        camera.TiltPivot((pivotPos - newPos).y * Time.deltaTime * pivotSpeed);
-                    pivotPos = newPos;
-                }
+                if (panPivot)
+                    camera.PanPivot(Input.GetAxis("Mouse X"));
+
+                if (tiltPivot)
+                    camera.TiltPivot(Input.GetAxis("Mouse Y"));
             }
 
-            if(zooming)
-            {
-                if (Mathf.Abs(Input.GetAxis("Mouse ScrollWheel")) > 0.001f)
-                    camera.Zoom(Input.GetAxis("Mouse ScrollWheel") * Time.deltaTime * zoomSpeed);
-            }
+            //Zooming
+            if (zooming && Mathf.Abs(Input.GetAxis("Mouse ScrollWheel")) > 0.001f)
+                camera.Zoom(Input.GetAxis("Mouse ScrollWheel"));
         }
     }
 }
