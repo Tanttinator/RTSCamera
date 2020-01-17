@@ -14,10 +14,15 @@ namespace RTSCamera
         //Keyboard movement
         public bool wasd = true;
 
+        //Drag movement
+        public bool dragging = true;
+
         //Speed of camera movement
         public float speed = 5f;
 
         new RTSCameraController camera;
+
+        Vector2 dragPos;
 
         private void Awake()
         {
@@ -31,6 +36,21 @@ namespace RTSCamera
             {
                 Vector2 dir = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * speed * Time.deltaTime;
                 camera.Move(dir);
+            }
+
+            //Drag movement
+            if(dragging)
+            {
+                if(Input.GetMouseButtonDown(0))
+                {
+                    dragPos = camera.GetMouseIntersection();
+                }
+                if(Input.GetMouseButton(0))
+                {
+                    Vector2 newPos = camera.GetMouseIntersection();
+                    camera.Move(dragPos - newPos);
+                    dragPos = camera.GetMouseIntersection();
+                }
             }
         }
     }
