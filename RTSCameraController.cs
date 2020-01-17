@@ -18,12 +18,23 @@ namespace RTSCamera
 
         public float zoomSpeed = 5f;
 
+        [Header("Constraints")]
+        public float minZoom = 5f;
+        public float maxZoom = 20f;
+
+        [Header("Zoom Tilt")]
+        public bool enableZoomTilt = true;
+        public float minZoomAngle = 45f;
+        public float maxZoomAngle = 85f;
+
         Vector2 dragPos;
 
         Vector2 moveTarget;
         bool isMovingTowards = false;
 
         Vector2 Position => new Vector2(transform.position.x, transform.position.z);
+
+        float ZoomLevel => (Mathf.Abs(camera.transform.localPosition.z) - minZoom) / (maxZoom - minZoom);
 
         #region Low Level
 
@@ -150,7 +161,40 @@ namespace RTSCamera
         /// <param name="dir">Positive to zoom in, negative to zoom out</param>
         public void Zoom(float dir)
         {
+            if ( (ZoomLevel >= 1f && dir < 0) || (ZoomLevel <= 0f && dir > 0) )
+                return;
+
+            float oldLevel = ZoomLevel;
+
             ZoomDistance(dir * Time.deltaTime * zoomSpeed);
+
+            float levelDiff = Mathf.Abs(oldLevel - ZoomLevel);
+
+            if(enableZoomTilt)
+            {
+                float currAngle = transform.eulerAngles.x;
+                float angle = currAngle;
+
+                //Zooming out
+                if(dir < 0f)
+                {
+                    float dist = 1f - oldLevel;
+                    float ratio = levelDiff / dist;
+                    if (currAngle <= Mathf.Lerp(minZoomAngle, maxZoomAngle, oldLevel))
+                        angle = Mathf.Lerp(currAngle, maxZoomAngle, ratio);
+                }
+
+                //Zooming in
+                if(dir > 0f)
+                {
+                    float dist = oldLevel;
+                    float ratio = levelDiff / dist;
+                    if (currAngle >= Mathf.Lerp(minZoomAngle, maxZoomAngle, oldLevel))
+                        angle = Mathf.Lerp(currAngle, minZoomAngle, ratio);
+                }
+
+                transform.rotation = Quaternion.Euler(angle, transform.eulerAngles.y, transform.eulerAngles.z);
+            }
         }
 
         /// <summary>
