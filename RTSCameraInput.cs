@@ -24,6 +24,9 @@ namespace RTSCamera
         //Zooming
         public bool zooming = true;
 
+        //Moving to target
+        public bool moveToTarget = true;
+
         new RTSCameraController camera;
 
         private void Awake()
@@ -66,6 +69,10 @@ namespace RTSCamera
             //Zooming
             if (zooming && Mathf.Abs(Input.GetAxis("Mouse ScrollWheel")) > 0.001f)
                 camera.Zoom(Input.GetAxis("Mouse ScrollWheel"));
+
+            //Moving to target
+            if (moveToTarget && Input.GetMouseButtonDown(2))
+                camera.MoveTowards(camera.GetMouseIntersection());
         }
     }
 }

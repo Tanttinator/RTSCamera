@@ -20,6 +20,11 @@ namespace RTSCamera
 
         Vector2 dragPos;
 
+        Vector2 moveTarget;
+        bool isMovingTowards = false;
+
+        Vector2 Position => new Vector2(transform.position.x, transform.position.z);
+
         #region Low Level
 
         /// <summary>
@@ -92,6 +97,8 @@ namespace RTSCamera
         /// <param name="dir">Positive to move forwards, negative to move backwards.</param>
         public void Dolly(float dir)
         {
+            if (dir != 0)
+                isMovingTowards = false;
             MoveLocal(Vector2.up * dir * Time.deltaTime * moveSpeed);
         }
 
@@ -101,6 +108,8 @@ namespace RTSCamera
         /// <param name="dir">Positive to move right, negative to move left.</param>
         public void Trucking(float dir)
         {
+            if (dir != 0)
+                isMovingTowards = false;
             MoveLocal(Vector2.right * dir * Time.deltaTime * moveSpeed);
         }
 
@@ -110,6 +119,7 @@ namespace RTSCamera
         /// <param name="start">Did the drag start this frame?</param>
         public void DragMove(bool start = false)
         {
+            isMovingTowards = false;
             Vector2 newPos = GetMouseIntersection();
             if(!start)
                 Move(dragPos - newPos);
@@ -143,6 +153,26 @@ namespace RTSCamera
             ZoomDistance(dir * Time.deltaTime * zoomSpeed);
         }
 
+        /// <summary>
+        /// Start moving the camera towards the given target over time.
+        /// </summary>
+        /// <param name="target"></param>
+        public void MoveTowards(Vector2 target)
+        {
+            moveTarget = target;
+            isMovingTowards = true;
+        }
+
         #endregion
+
+        private void Update()
+        {
+            if(isMovingTowards)
+            {
+                Move((moveTarget - Position).normalized * Time.deltaTime * moveSpeed * 1.5f);
+                if (Vector2.Distance(Position, moveTarget) < 0.1f)
+                    isMovingTowards = false;
+            }
+        }
     }
 }
