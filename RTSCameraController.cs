@@ -14,10 +14,21 @@ namespace RTSCamera
         /// <summary>
         /// Move the camera instantly.
         /// </summary>
-        /// <param name="dir">The point relative to the cameras position.</param>
+        /// <param name="dir">The point relative to the cameras position in world space.</param>
         public void Move(Vector2 dir)
         {
             transform.Translate(new Vector3(dir.x, 0f, dir.y), Space.World);
+        }
+
+        /// <summary>
+        /// Move the camera instantly.
+        /// </summary>
+        /// <param name="dir">The point relative to the cameras position in local space.</param>
+        public void MoveLocal(Vector2 dir)
+        {
+            Vector3 horizontal = transform.right * dir.x;
+            Vector3 vertical = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized * dir.y;
+            transform.Translate(horizontal + vertical, Space.World);
         }
 
         /// <summary>

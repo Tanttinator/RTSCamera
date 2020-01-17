@@ -44,7 +44,7 @@ namespace RTSCamera
             if(wasd)
             {
                 Vector2 dir = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical")) * moveSpeed * Time.deltaTime;
-                camera.Move(dir);
+                camera.MoveLocal(dir);
             }
 
             //Drag movement
