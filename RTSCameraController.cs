@@ -21,6 +21,24 @@ namespace RTSCamera
         }
 
         /// <summary>
+        /// Pan the camera around the pivot
+        /// </summary>
+        /// <param name="angle"></param>
+        public void PanPivot(float angle)
+        {
+            transform.Rotate(0f, angle, 0f, Space.World);
+        }
+
+        /// <summary>
+        /// Tilt the camera around the pivot
+        /// </summary>
+        /// <param name="angle"></param>
+        public void TiltPivot(float angle)
+        {
+            transform.RotateAround(transform.position, transform.right, angle);
+        }
+
+        /// <summary>
         /// Calculates the point where a ray from the cursor intersects with pivot.y.
         /// </summary>
         /// <returns>Point of intersection in world space.</returns>
