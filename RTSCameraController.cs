@@ -42,20 +42,22 @@ namespace RTSCamera
         /// Move the camera instantly.
         /// </summary>
         /// <param name="dir">The point relative to the cameras position in world space.</param>
-        public void Move(Vector2 dir)
+        public void Move(Vector3 dir)
         {
-            transform.Translate(new Vector3(dir.x, 0f, dir.y), Space.World);
+            transform.Translate(dir, Space.World);
         }
 
         /// <summary>
         /// Move the camera instantly.
         /// </summary>
         /// <param name="dir">The point relative to the cameras position in local space.</param>
-        public void MoveLocal(Vector2 dir)
+        public void MoveLocal(Vector3 dir)
         {
             Vector3 horizontal = transform.right * dir.x;
-            Vector3 vertical = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized * dir.y;
+            Vector3 vertical = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized * dir.z;
+            Vector3 upward = new Vector3(0f, dir.y, 0f);
             transform.Translate(horizontal + vertical, Space.World);
+            camera.transform.Translate(upward, Space.World);
         }
 
         /// <summary>
@@ -110,7 +112,7 @@ namespace RTSCamera
         {
             if (dir != 0)
                 isMovingTowards = false;
-            MoveLocal(Vector2.up * dir * Time.deltaTime * moveSpeed);
+            MoveLocal(Vector3.forward * dir * Time.deltaTime * moveSpeed);
         }
 
         /// <summary>
@@ -121,7 +123,18 @@ namespace RTSCamera
         {
             if (dir != 0)
                 isMovingTowards = false;
-            MoveLocal(Vector2.right * dir * Time.deltaTime * moveSpeed);
+            MoveLocal(Vector3.right * dir * Time.deltaTime * moveSpeed);
+        }
+
+        /// <summary>
+        /// Move the camera along the Y axis.
+        /// </summary>
+        /// <param name="dir">Positive to move up, negative to move down.</param>
+        public void Pedestal(float dir)
+        {
+            if (dir != 0)
+                isMovingTowards = false;
+            MoveLocal(Vector3.up * dir * Time.deltaTime * moveSpeed);
         }
 
         /// <summary>
@@ -133,7 +146,7 @@ namespace RTSCamera
             isMovingTowards = false;
             Vector2 newPos = GetMouseIntersection();
             if(!start)
-                Move(dragPos - newPos);
+                Move(new Vector3(dragPos.x - newPos.x, 0f, dragPos.y - newPos.y));
             dragPos = GetMouseIntersection();
         }
 

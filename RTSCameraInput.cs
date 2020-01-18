@@ -41,6 +41,7 @@ namespace RTSCamera
             {
                 camera.Dolly(Input.GetAxis("Vertical"));
                 camera.Trucking(Input.GetAxis("Horizontal"));
+                camera.Pedestal(Input.GetAxis("Upward"));
             }
 
             //Drag movement
