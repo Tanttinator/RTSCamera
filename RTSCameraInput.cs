@@ -45,7 +45,6 @@ namespace RTSCamera
             {
                 camera.Dolly(Input.GetAxis("Vertical"));
                 camera.Trucking(Input.GetAxis("Horizontal"));
-                camera.Pedestal(Input.GetAxis("Upward"));
             }
 
             //Drag movement
@@ -65,17 +64,11 @@ namespace RTSCamera
             if (Input.GetMouseButton(1))
             {
                 if (panPivot)
-                    camera.PanPivot(Input.GetAxis("Mouse X"));
+                    camera.Pan(Input.GetAxis("Mouse X"));
 
                 if (tiltPivot)
-                    camera.TiltPivot(Input.GetAxis("Mouse Y"));
+                    camera.Tilt(Input.GetAxis("Mouse Y"));
             }
-
-            //Camera turning
-            if (panCamera)
-                camera.PanCamera(Input.GetAxis("Horizontal Rotation"));
-            if (tiltCamera)
-                camera.TiltCamera(Input.GetAxis("Vertical Rotation"));
 
             //Zooming
             if (zooming && Mathf.Abs(Input.GetAxis("Mouse ScrollWheel")) > 0.001f)

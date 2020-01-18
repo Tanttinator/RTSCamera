@@ -47,9 +47,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camera: {fileID: 4180639625782046253}
   moveSpeed: 5
-  pivotSpeed: 100
+  rotationSpeed: 100
   zoomSpeed: 1000
-  camRotationSpeed: 50
   minZoom: 5
   maxZoom: 20
   enableZoomTilt: 1

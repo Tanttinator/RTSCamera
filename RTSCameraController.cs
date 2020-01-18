@@ -14,11 +14,9 @@ namespace RTSCamera
         [Header("Movement speeds")]
         public float moveSpeed = 5f;
 
-        public float pivotSpeed = 5f;
+        public float rotationSpeed = 100f;
 
         public float zoomSpeed = 5f;
-
-        public float camRotationSpeed = 5f;
 
         [Header("Constraints")]
         public float minZoom = 5f;
@@ -44,29 +42,28 @@ namespace RTSCamera
         /// Move the camera instantly.
         /// </summary>
         /// <param name="dir">The point relative to the cameras position in world space.</param>
-        public void Move(Vector3 dir)
+        public void Move(Vector2 dir)
         {
-            transform.Translate(dir, Space.World);
+            transform.Translate(new Vector3(dir.x, 0f, dir.y), Space.World);
         }
 
         /// <summary>
         /// Move the camera instantly.
         /// </summary>
         /// <param name="dir">The point relative to the cameras position in local space.</param>
-        public void MoveLocal(Vector3 dir)
+        public void MoveLocal(Vector2 dir)
         {
             Vector3 horizontal = transform.right * dir.x;
-            Vector3 vertical = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized * dir.z;
-            Vector3 upward = new Vector3(0f, dir.y, 0f);
+            Vector3 vertical = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized * dir.y;
+
             transform.Translate(horizontal + vertical, Space.World);
-            camera.transform.Translate(upward, Space.World);
         }
 
         /// <summary>
         /// Pan the camera around the pivot by an angle.
         /// </summary>
         /// <param name="angle"></param>
-        public void PanPivotAngle(float angle)
+        public void PanAngle(float angle)
         {
             transform.Rotate(0f, angle, 0f, Space.World);
         }
@@ -75,27 +72,9 @@ namespace RTSCamera
         /// Tilt the camera around the pivot by an angle.
         /// </summary>
         /// <param name="angle"></param>
-        public void TiltPivotAngle(float angle)
+        public void TiltAngle(float angle)
         {
             transform.RotateAround(transform.position, transform.right, angle);
-        }
-
-        /// <summary>
-        /// Pan the camera around itself by an angle.
-        /// </summary>
-        /// <param name="angle"></param>
-        public void PanCameraAngle(float angle)
-        {
-            transform.RotateAround(camera.transform.position, Vector3.up, angle);
-        }
-
-        /// <summary>
-        /// Tilt the camera around itself by an angle.
-        /// </summary>
-        /// <param name="angle"></param>
-        public void TiltCameraAngle(float angle)
-        {
-            transform.RotateAround(camera.transform.position, camera.transform.right, angle);
         }
 
         /// <summary>
@@ -132,7 +111,7 @@ namespace RTSCamera
         {
             if (dir != 0)
                 isMovingTowards = false;
-            MoveLocal(Vector3.forward * dir * Time.deltaTime * moveSpeed);
+            MoveLocal(Vector2.up * dir * Time.deltaTime * moveSpeed);
         }
 
         /// <summary>
@@ -143,18 +122,7 @@ namespace RTSCamera
         {
             if (dir != 0)
                 isMovingTowards = false;
-            MoveLocal(Vector3.right * dir * Time.deltaTime * moveSpeed);
-        }
-
-        /// <summary>
-        /// Move the camera along the Y axis.
-        /// </summary>
-        /// <param name="dir">Positive to move up, negative to move down.</param>
-        public void Pedestal(float dir)
-        {
-            if (dir != 0)
-                isMovingTowards = false;
-            MoveLocal(Vector3.up * dir * Time.deltaTime * moveSpeed);
+            MoveLocal(Vector2.right * dir * Time.deltaTime * moveSpeed);
         }
 
         /// <summary>
@@ -174,36 +142,18 @@ namespace RTSCamera
         /// Pan around the pivot.
         /// </summary>
         /// <param name="dir">Positive to turn clockwise, negative to turn anti-clockwise.</param>
-        public void PanPivot(float dir)
+        public void Pan(float dir)
         {
-            PanPivotAngle(dir * Time.deltaTime * pivotSpeed);
+            PanAngle(dir * Time.deltaTime * rotationSpeed);
         }
 
         /// <summary>
         /// Tilt around the pivot.
         /// </summary>
         /// <param name="dir">Positive to turn down, negative to turn up.</param>
-        public void TiltPivot(float dir)
+        public void Tilt(float dir)
         {
-            TiltPivotAngle(-dir * Time.deltaTime * pivotSpeed);
-        }
-
-        /// <summary>
-        /// Pan around the camera.
-        /// </summary>
-        /// <param name="dir">Positive to turn clockwise, negative to turn anti-clockwise.</param>
-        public void PanCamera(float dir)
-        {
-            PanCameraAngle(dir * Time.deltaTime * camRotationSpeed);
-        }
-
-        /// <summary>
-        /// Tilt around the camera.
-        /// </summary>
-        /// <param name="dir">Positive to turn up, negative to turn down.</param>
-        public void TiltCamera(float dir)
-        {
-            TiltCameraAngle(-dir * Time.deltaTime * camRotationSpeed);
+            TiltAngle(-dir * Time.deltaTime * rotationSpeed);
         }
 
         /// <summary>
@@ -264,7 +214,7 @@ namespace RTSCamera
         {
             if(isMovingTowards)
             {
-                Move(new Vector3(moveTarget.x - Position.x, 0f, moveTarget.y - Position.y).normalized * Time.deltaTime * moveSpeed * 1.5f);
+                Move((moveTarget - Position).normalized * Time.deltaTime * moveSpeed * 1.5f);
                 if (Vector2.Distance(Position, moveTarget) < 0.1f)
                     isMovingTowards = false;
             }
