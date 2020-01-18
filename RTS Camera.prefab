@@ -49,6 +49,9 @@ MonoBehaviour:
   moveSpeed: 5
   rotationSpeed: 100
   zoomSpeed: 1000
+  panAngle: 360
+  minTilt: 30
+  maxTilt: 85
   minZoom: 5
   maxZoom: 20
   enableZoomTilt: 1
