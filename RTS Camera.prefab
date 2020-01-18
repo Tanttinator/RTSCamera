@@ -49,6 +49,12 @@ MonoBehaviour:
   moveSpeed: 5
   pivotSpeed: 100
   zoomSpeed: 1000
+  camRotationSpeed: 50
+  minZoom: 5
+  maxZoom: 20
+  enableZoomTilt: 1
+  minZoomAngle: 45
+  maxZoomAngle: 85
 --- !u!114 &4180639624756299614
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -65,7 +71,10 @@ MonoBehaviour:
   dragging: 1
   panPivot: 1
   tiltPivot: 1
+  panCamera: 1
+  tiltCamera: 1
   zooming: 1
+  moveToTarget: 1
 --- !u!1 &4180639625782046255
 GameObject:
   m_ObjectHideFlags: 0

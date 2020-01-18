@@ -18,6 +18,8 @@ namespace RTSCamera
 
         public float zoomSpeed = 5f;
 
+        public float camRotationSpeed = 5f;
+
         [Header("Constraints")]
         public float minZoom = 5f;
         public float maxZoom = 20f;
@@ -76,6 +78,24 @@ namespace RTSCamera
         public void TiltPivotAngle(float angle)
         {
             transform.RotateAround(transform.position, transform.right, angle);
+        }
+
+        /// <summary>
+        /// Pan the camera around itself by an angle.
+        /// </summary>
+        /// <param name="angle"></param>
+        public void PanCameraAngle(float angle)
+        {
+            transform.RotateAround(camera.transform.position, Vector3.up, angle);
+        }
+
+        /// <summary>
+        /// Tilt the camera around itself by an angle.
+        /// </summary>
+        /// <param name="angle"></param>
+        public void TiltCameraAngle(float angle)
+        {
+            transform.RotateAround(camera.transform.position, camera.transform.right, angle);
         }
 
         /// <summary>
@@ -169,6 +189,24 @@ namespace RTSCamera
         }
 
         /// <summary>
+        /// Pan around the camera.
+        /// </summary>
+        /// <param name="dir">Positive to turn clockwise, negative to turn anti-clockwise.</param>
+        public void PanCamera(float dir)
+        {
+            PanCameraAngle(dir * Time.deltaTime * camRotationSpeed);
+        }
+
+        /// <summary>
+        /// Tilt around the camera.
+        /// </summary>
+        /// <param name="dir">Positive to turn up, negative to turn down.</param>
+        public void TiltCamera(float dir)
+        {
+            TiltCameraAngle(-dir * Time.deltaTime * camRotationSpeed);
+        }
+
+        /// <summary>
         /// Zoom the camera by moving it farther / closer to the pivot
         /// </summary>
         /// <param name="dir">Positive to zoom in, negative to zoom out</param>
@@ -226,7 +264,7 @@ namespace RTSCamera
         {
             if(isMovingTowards)
             {
-                Move((moveTarget - Position).normalized * Time.deltaTime * moveSpeed * 1.5f);
+                Move(new Vector3(moveTarget.x - Position.x, 0f, moveTarget.y - Position.y).normalized * Time.deltaTime * moveSpeed * 1.5f);
                 if (Vector2.Distance(Position, moveTarget) < 0.1f)
                     isMovingTowards = false;
             }

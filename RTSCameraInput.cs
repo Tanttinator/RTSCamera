@@ -21,6 +21,10 @@ namespace RTSCamera
         public bool panPivot = true;
         public bool tiltPivot = true;
 
+        //Camera rotation
+        public bool panCamera = true;
+        public bool tiltCamera = true;
+
         //Zooming
         public bool zooming = true;
 
@@ -57,7 +61,7 @@ namespace RTSCamera
                 }
             }
 
-            //Drag turning
+            //Pivot turning
             if (Input.GetMouseButton(1))
             {
                 if (panPivot)
@@ -66,6 +70,12 @@ namespace RTSCamera
                 if (tiltPivot)
                     camera.TiltPivot(Input.GetAxis("Mouse Y"));
             }
+
+            //Camera turning
+            if (panCamera)
+                camera.PanCamera(Input.GetAxis("Horizontal Rotation"));
+            if (tiltCamera)
+                camera.TiltCamera(Input.GetAxis("Vertical Rotation"));
 
             //Zooming
             if (zooming && Mathf.Abs(Input.GetAxis("Mouse ScrollWheel")) > 0.001f)
