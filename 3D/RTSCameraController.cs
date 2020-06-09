@@ -19,6 +19,7 @@ namespace RTSCamera
         public float zoomSpeed = 5f;
 
         [Header("Constraints")]
+        public bool useConstraints = false;
         public Rect moveArea;
 
         public float panAngle = 360f;
@@ -54,10 +55,10 @@ namespace RTSCamera
         public void Move(Vector2 dir)
         {
             float x = dir.x;
-            if ( (Position.x <= moveArea.x && x < 0) || (Position.x >= moveArea.xMax && x > 0) )
+            if (useConstraints && ((Position.x <= moveArea.x && x < 0) || (Position.x >= moveArea.xMax && x > 0)))
                 x = 0;
             float y = dir.y;
-            if ((Position.y <= moveArea.y && y < 0) || (Position.y >= moveArea.yMax && y > 0))
+            if (useConstraints && ((Position.y <= moveArea.y && y < 0) || (Position.y >= moveArea.yMax && y > 0)))
                 y = 0;
             transform.Translate(new Vector3(x, 0f, y), Space.World);
         }
@@ -156,7 +157,7 @@ namespace RTSCamera
             isMovingTowards = false;
             Vector2 newPos = GetMouseIntersection();
             if(!start)
-                Move(new Vector3(dragPos.x - newPos.x, 0f, dragPos.y - newPos.y));
+                Move(new Vector2(dragPos.x - newPos.x, dragPos.y - newPos.y));
             dragPos = GetMouseIntersection();
         }
 
