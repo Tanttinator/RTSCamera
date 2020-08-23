@@ -50,7 +50,7 @@ namespace RTSCamera
         {
             if(dir.magnitude > 0)
                 isMovingToTarget = false;
-            Translate(dir * moveSpeed * Time.deltaTime);
+            Translate(dir.normalized * moveSpeed * Time.deltaTime);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace RTSCamera
             isMovingToTarget = false;
             Vector2 newPos = GetMousePos();
             if (!start)
-                Move(dragPos - newPos);
+                Translate(dragPos - newPos);
             dragPos = GetMousePos();
         }
 
@@ -87,7 +87,23 @@ namespace RTSCamera
             isMovingToTarget = true;
         }
 
-        Vector2 GetMousePos()
+        /// <summary>
+        /// Set the constraints of this camera.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        public void SetConstraints(float x, float y, float width, float height)
+        {
+            moveArea = new Rect(x, y, width, height);
+        }
+
+        /// <summary>
+        /// Get the position of the cursor in the game world.
+        /// </summary>
+        /// <returns></returns>
+        public Vector2 GetMousePos()
         {
             return camera.ScreenToWorldPoint(Input.mousePosition);
         }
