@@ -13,48 +13,48 @@ namespace RTSCamera
         new Camera camera;
 
         [Header("Movement speeds")]
-        public float moveSpeed = 5f;
+        [SerializeField] float moveSpeed = 5f;
 
-        public float zoomSpeed = 5f;
+        [SerializeField] float zoomSpeed = 5f;
 
         [Header("Constraints")]
-        public Rect moveArea;
-        public float minZoom = 2f;
-        public float maxZoom = 10f;
+        [SerializeField] Rect moveArea;
+        [SerializeField] float minZoom = 2f;
+        [SerializeField] float maxZoom = 10f;
 
         Vector2 dragPos;
 
         Vector2 moveTarget;
-        bool isMovingToTarget = false;
+        public bool isMovingToTarget { get; protected set; } = false;
 
         /// <summary>
-        /// Move the camera instantly.
+        /// Try to move the camera in the given direction.
         /// </summary>
-        /// <param name="pos">The point relative to the camera.</param>
-        public void MoveTo(Vector2 pos)
+        /// <param name="dir">The point relative to the camera.</param>
+        public void Translate(Vector2 dir)
         {
-            float x = pos.x;
+            float x = dir.x;
             if ((transform.position.x < moveArea.x && x < 0) || (transform.position.x > moveArea.xMax && x > 0))
                 x = 0;
-            float y = pos.y;
+            float y = dir.y;
             if ((transform.position.y < moveArea.y && y < 0) || (transform.position.y > moveArea.yMax && y > 0))
                 y = 0;
             transform.Translate(new Vector3(x, y, 0f));
         }
 
         /// <summary>
-        /// Move the camera along the direction.
+        /// Move the camera using the keyboard.
         /// </summary>
         /// <param name="dir"></param>
         public void Move(Vector2 dir)
         {
             if(dir.magnitude > 0)
                 isMovingToTarget = false;
-            MoveTo(dir * Time.deltaTime * moveSpeed);
+            Translate(dir * moveSpeed * Time.deltaTime);
         }
 
         /// <summary>
-        /// Drag the camera.
+        /// Drag the camera with the mouse.
         /// </summary>
         /// <param name="start">Did the drag start this frame?</param>
         public void Drag(bool start = false)
@@ -62,7 +62,7 @@ namespace RTSCamera
             isMovingToTarget = false;
             Vector2 newPos = GetMousePos();
             if (!start)
-                MoveTo(dragPos - newPos);
+                Move(dragPos - newPos);
             dragPos = GetMousePos();
         }
 
@@ -87,7 +87,7 @@ namespace RTSCamera
             isMovingToTarget = true;
         }
 
-        public Vector2 GetMousePos()
+        Vector2 GetMousePos()
         {
             return camera.ScreenToWorldPoint(Input.mousePosition);
         }
@@ -101,7 +101,7 @@ namespace RTSCamera
         {
             if (isMovingToTarget)
             {
-                MoveTo((moveTarget - (Vector2)transform.position).normalized * Time.deltaTime * moveSpeed * 1.5f);
+                Translate((moveTarget - (Vector2)transform.position).normalized * Time.deltaTime * moveSpeed * 1.5f);
                 if (Vector2.Distance(transform.position, moveTarget) < 0.1f)
                     isMovingToTarget = false;
             }
